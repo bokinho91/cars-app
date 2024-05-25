@@ -1,65 +1,77 @@
-import axios, { AxiosInstance } from "axios";
+import HttpService from "./HttpService";
+import { AxiosResponse } from "axios";
+class CarService extends HttpService {
+  // OVO OTKOMENTARISETE AKO U SAGAMA KORISTITE POZIVANJE BR. 2
+  //sve metode koje ispod napisete morate bind-ovati unutar konstruktora kako bi 'this' unutar metode
+  //referencirao na instancu carService
 
-class CarService {
-  private client: AxiosInstance;
+  // constructor() {
+  //   super();
 
-  constructor() {
-    this.client = axios.create({
-      baseURL: "http://localhost:5000/api",
-    });
-  }
+  //   this.getAll = this.getAll.bind(this);
+  //   this.add = this.add.bind(this);
+  //   this.delete = this.delete.bind(this);
+  //   this.get = this.get.bind(this);
+  //   this.edit = this.edit.bind(this);
+  // }
 
   async getAll(): Promise<Car[]> {
     try {
-      const { data } = await this.client.get<Car[]>("cars");
-      return data;
+      console.log("Service called from saga");
+      const response: AxiosResponse<Car[]> = await this.client.get("cars");
+      return response.data; // Return the data from the response
     } catch (error) {
-      console.log(error);
-    }
-
-    return [];
-  }
-
-  async add(newCar: Partial<Car>): Promise<Car | null> {
-    try {
-      const { data } = await this.client.post<Car>("cars", newCar);
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
-
-    return null;
-  }
-
-  async delete(carId: number): Promise<DeletedCarResponse | undefined> {
-    try {
-      const { data } = await this.client.delete(`cars/${carId}`);
-      return data;
-    } catch (error) {
-      console.log(error);
+      console.error("Error fetching cars:", error);
+      throw error; // Rethrow the error to handle it elsewhere
     }
   }
 
-  async get(id: number): Promise<Car | {}> {
+  async add(newCar: Partial<Car>): Promise<any | null> {
     try {
-      const { data } = await this.client.get<Car>(`cars/${id}`);
-      return data;
+      const response: AxiosResponse<any> = await this.client.post(
+        "cars",
+        newCar
+      );
+      return response.data;
     } catch (error) {
       console.log(error);
+      return null;
     }
-
-    return {};
   }
 
-  async edit(id: number, newCar: Partial<Car>): Promise<Car | null> {
+  async delete(carId: number): Promise<any> {
     try {
-      const { data } = await this.client.put<Car>(`cars/${id}`, newCar);
-      return data;
+      const response: AxiosResponse<any> = await this.client.delete(
+        `cars/${carId}`
+      );
+      return response.data;
     } catch (error) {
       console.log(error);
+      throw error;
     }
+  }
 
-    return null;
+  async get(id: number): Promise<any> {
+    try {
+      const response: AxiosResponse<any> = await this.client.get(`cars/${id}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async edit(id: number, newCar: any): Promise<any | null> {
+    try {
+      const response: AxiosResponse<any> = await this.client.put(
+        `cars/${id}`,
+        newCar
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
   }
 }
 

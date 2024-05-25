@@ -2,6 +2,7 @@ import React from "react";
 
 interface SingleCarProps {
   id: number;
+  isSelected?: boolean;
   brand: string;
   model: string;
   year: number;
@@ -11,10 +12,12 @@ interface SingleCarProps {
   numberOfDoors: number;
   deleteCallback: (id: number) => void;
   editCallback: (id: number) => void;
+  selectCar: (id: number) => void;
 }
 
 const SingleCar: React.FC<SingleCarProps> = ({
   id,
+  isSelected,
   brand,
   model,
   year,
@@ -24,6 +27,7 @@ const SingleCar: React.FC<SingleCarProps> = ({
   numberOfDoors,
   deleteCallback,
   editCallback,
+  selectCar,
 }) => {
   return (
     <li
@@ -44,6 +48,9 @@ const SingleCar: React.FC<SingleCarProps> = ({
       <span>Number of doors: {numberOfDoors}</span>
       <button onClick={() => deleteCallback(id)}>Delete</button>
       <button onClick={() => editCallback(id)}>Edit</button>
+      <button onClick={() => selectCar(id)}>
+        {isSelected ? "Deselect" : "Select"}
+      </button>
     </li>
   );
 };
